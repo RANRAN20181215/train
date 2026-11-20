@@ -397,7 +397,7 @@ body.tab-set header .hstat{display:none}
         </div>
         <input type="file" id="impFile" accept="application/json,.json" style="display:none">
       </div>
-      <p class="hint" style="text-align:center;padding-bottom:14px">冉冉每日任务小火车 · 数据存在本机，随时可备份 · v3</p>
+      <p class="hint" style="text-align:center;padding-bottom:14px">冉冉每日任务小火车 · 数据存在本机 · v4</p>
     </section>
   </main>
 
@@ -1161,7 +1161,7 @@ function ghErr(status, j){
   var m = (j && j.message) || '';
   if(status === 401) return 'Token 无效或已过期，请重新生成';
   if(status === 403) return 'Token 没有 Contents 读写权限';
-  if(status === 404) return 'Token 看不到 ' + (state.gh.repo || '私有仓库') + '：Repository access 没勾这个仓库';
+  if(status === 404) return '看不到 ' + (state.gh.owner || '') + '/' + (state.gh.repo || '') + '：Token 要属于这个账号，且 Repository access 勾选了这个仓库';
   if(status === 409) return '云端版本冲突，再点一次备份';
   if(status === 422) return 'Token 权限不够（需要 Contents: Read and write）';
   if(status >= 500) return 'GitHub 服务异常，稍后再试';
