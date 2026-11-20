@@ -1168,6 +1168,15 @@ function ghErr(status, j){
   return 'GitHub 返回 ' + status + (m ? '：' + String(m).slice(0,30) : '');
 }
 
+async function whoAmI(){
+  try{
+    var r = await fetch('https://api.github.com/user', { headers: ghHeaders(), cache:'no-store' });
+    if(r.ok){ var j = await r.json(); return j.login || ''; }
+    if(r.status === 401) return '__invalid__';
+    return '';
+  }catch(e){ return ''; }
+}
+
 async function probeRepo(){
   var g = state.gh;
   try{
@@ -1175,6 +1184,14 @@ async function probeRepo(){
       { headers: ghHeaders(), cache:'no-store' });
     if(r.ok) return { ok:true };
     var j = await r.json().catch(function(){ return {}; });
+    if(r.status === 404){
+      var me = await whoAmI();
+      if(me === '__invalid__') return { ok:false, msg:'Token 无效或已过期，请重新生成' };
+      if(me && me.toLowerCase() !== String(g.owner).toLowerCase()){
+        return { ok:false, msg:'这个 Token 属于账号 ' + me + '，不是 ' + g.owner + '，请用 ' + g.owner + ' 登录后重新生成' };
+      }
+      return { ok:false, msg:'账号对了，但 Token 里没勾 ' + g.repo + '：去 Edit → Repository access → Only select repositories 勾上它' };
+    }
     return { ok:false, msg: ghErr(r.status, j) };
   }catch(e){
     return { ok:false, msg:'网络不通，检查手机能不能上 GitHub' };
@@ -1186,10 +1203,12 @@ async function ghCheck(){
   setSyncUI('busy','检查中…');
   var p = await probeRepo();
   if(!p.ok){ setSyncUI('err', p.msg); toast(p.msg); return; }
+  var me = await whoAmI();
+  var who = (me && me !== '__invalid__') ? ' · 账号 ' + me : '';
   var c = await fetch(contentsUrl() + '?ref=' + encodeURIComponent(state.gh.branch || 'main'),
     { headers: ghHeaders(), cache:'no-store' });
-  if(c.status === 200){ setSyncUI('ok','连接正常 · 云端有备份',''); toast('连接正常，可以直接备份'); return; }
-  if(c.status === 404){ setSyncUI('ok','连接正常 · 云端还没有备份文件',''); toast('连接正常，现在可以备份了'); return; }
+  if(c.status === 200){ setSyncUI('ok','连接正常'+who+' · 云端有备份',''); toast('连接正常，可以直接备份'); return; }
+  if(c.status === 404){ setSyncUI('ok','连接正常'+who+' · 云端还没有备份文件',''); toast('连接正常，现在可以备份了'); return; }
   var j = await c.json().catch(function(){ return {}; });
   var msg = ghErr(c.status, j);
   setSyncUI('err', msg);
