@@ -1,6 +1,6 @@
 {
-  "name": "任务小火车",
-  "short_name": "小火车",
+  "name": "冉冉每日任务小火车",
+  "short_name": "冉冉小火车",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
