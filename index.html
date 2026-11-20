@@ -393,7 +393,7 @@ body.tab-set header .hstat{display:none}
         </div>
         <input type="file" id="impFile" accept="application/json,.json" style="display:none">
       </div>
-      <p class="hint" style="text-align:center;padding-bottom:14px">冉冉每日任务小火车 · 数据存在本机，随时可备份</p>
+      <p class="hint" style="text-align:center;padding-bottom:14px">冉冉每日任务小火车 · 数据存在本机，随时可备份 · v3</p>
     </section>
   </main>
 
@@ -1297,8 +1297,17 @@ renderEditor();
 })();
 
 if('serviceWorker' in navigator){
+  var hadSW = !!navigator.serviceWorker.controller;
   window.addEventListener('load', function(){
-    navigator.serviceWorker.register('sw.js').catch(function(){});
+    navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then(function(reg){
+      reg.update().catch(function(){});
+    }).catch(function(){});
+  });
+  navigator.serviceWorker.addEventListener('controllerchange', function(){
+    if(hadSW){
+      hadSW = false;
+      try{ location.reload(); }catch(e){}
+    }
   });
 }
 })();
