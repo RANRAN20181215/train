@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
@@ -34,6 +34,7 @@ body{
   background:var(--bg);color:var(--ink);
   -webkit-font-smoothing:antialiased;
   overscroll-behavior-y:contain;
+  min-height:100vh;
   min-height:100dvh;
 }
 button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer}
@@ -41,6 +42,7 @@ input,select{font:inherit;color:inherit}
 
 #app{
   max-width:520px;margin:0 auto;
+  min-height:100vh;
   min-height:100dvh;
   display:flex;flex-direction:column;
   padding-bottom:calc(74px + env(safe-area-inset-bottom));
@@ -118,6 +120,8 @@ header{
   content:"";position:absolute;right:-10px;top:50%;width:11px;height:3px;border-radius:3px;background:#E2D0B8;transform:translateY(-50%);
 }
 .car:last-child::after{display:none}
+.car>span:first-child{filter:grayscale(.8);opacity:.45;transition:filter .25s,opacity .25s}
+.car.done>span:first-child{filter:none;opacity:1}
 .car .tick{
   position:absolute;right:-5px;top:-6px;
   width:18px;height:18px;border-radius:50%;
