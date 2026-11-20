@@ -2,12 +2,12 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<title>任务小火车</title>
+<title>冉冉每日任务小火车</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#FFF7EC">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="小火车">
+<meta name="apple-mobile-web-app-title" content="冉冉小火车">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%82%3C/text%3E%3C/svg%3E">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%82%3C/text%3E%3C/svg%3E">
@@ -59,9 +59,9 @@ header{
   -webkit-backdrop-filter:saturate(160%) blur(8px);
 }
 .hrow{display:flex;align-items:center;gap:10px}
-.brand{font-size:19px;font-weight:800;letter-spacing:.3px;display:flex;align-items:center;gap:6px}
-.brand span{font-size:22px}
-.hdate{margin-left:auto;font-size:12px;color:var(--muted);text-align:right;line-height:1.35}
+.brand{font-size:17.5px;font-weight:800;letter-spacing:.2px;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.brand span{font-size:21px}
+.hdate{margin-left:auto;font-size:12px;color:var(--muted);text-align:right;line-height:1.35;flex:0 0 auto;padding-left:6px}
 .hdate b{display:block;font-size:13px;color:var(--ink2);font-weight:600}
 
 .hstat{margin-top:10px;background:var(--card);border-radius:14px;padding:10px 12px;box-shadow:var(--shadow);border:1px solid #FBF1E4}
@@ -150,7 +150,15 @@ main{flex:1;padding:16px 16px 0}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
 .sec-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--ink2);margin:2px 0 10px}
-.sec-title .line{flex:1;height:1px;background:var(--line2)}
+.sec-title .line{flex:1;height:1px;background:var(--line2);min-width:8px}
+.sec-title .st{white-space:nowrap}
+.tbtn{
+  flex:0 0 auto;height:28px;padding:0 10px;border-radius:9px;
+  background:#FFF1E8;color:#E4622A;font-size:12px;font-weight:700;
+  display:inline-flex;align-items:center;
+}
+.tbtn:active{background:#FFDCC9}
+.tbtn.alt{background:#F3F7EC;color:#4F8B3B}
 
 /* ---------- task card ---------- */
 .card{
@@ -242,14 +250,14 @@ main{flex:1;padding:16px 16px 0}
 .panel{background:var(--card);border-radius:var(--r);padding:14px;box-shadow:var(--shadow);border:1px solid #FBF1E4;margin-bottom:14px}
 .panel h3{margin:0 0 4px;font-size:14px}
 .panel .hint{font-size:11.5px;color:var(--muted);line-height:1.7;margin:0 0 10px}
-.editrow{display:flex;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--line)}
+.editrow{display:flex;align-items:center;gap:6px;padding:9px 0;border-top:1px solid var(--line)}
 .editrow:first-of-type{border-top:0}
-.editrow .emo{width:38px;height:38px;border-radius:10px;background:#FBF3E8;display:flex;align-items:center;justify-content:center;font-size:19px;text-align:center;padding:0}
-.editrow input.nm{flex:1;min-width:0;height:38px;border-radius:10px;border:1px solid var(--line2);background:#FFFDF9;padding:0 10px;font-size:16px}
-.editrow input.tg{width:58px;height:38px;border-radius:10px;border:1px solid var(--line2);background:#FFFDF9;padding:0 6px;font-size:15px;text-align:center}
-.editrow .mv{display:flex;flex-direction:column;gap:3px}
-.editrow .mv button{width:28px;height:23px;border-radius:7px;background:#F7EFE3;font-size:11px;color:var(--muted);display:flex;align-items:center;justify-content:center}
-.editrow .del{width:32px;height:32px;border-radius:10px;background:#FDF0EE;color:#D4664F;font-size:15px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.editrow .emo{width:34px;height:38px;border-radius:10px;background:#FBF3E8;display:flex;align-items:center;justify-content:center;font-size:18px;text-align:center;padding:0;flex:0 0 auto}
+.editrow input.nm{flex:1;min-width:0;height:38px;border-radius:10px;border:1px solid var(--line2);background:#FFFDF9;padding:0 9px;font-size:15px}
+.editrow input.tg{width:50px;height:38px;border-radius:10px;border:1px solid var(--line2);background:#FFFDF9;padding:0 4px;font-size:15px;text-align:center;flex:0 0 auto}
+.editrow .mv{display:flex;flex-direction:column;gap:3px;flex:0 0 auto}
+.editrow .mv button{width:26px;height:23px;border-radius:7px;background:#F7EFE3;font-size:11px;color:var(--muted);display:flex;align-items:center;justify-content:center}
+.editrow .del{width:30px;height:32px;border-radius:10px;background:#FDF0EE;color:#D4664F;font-size:15px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
 .field{margin-bottom:9px}
 .field label{display:block;font-size:11.5px;color:var(--muted);margin-bottom:4px}
 .field input{width:100%;height:42px;border-radius:11px;border:1px solid var(--line2);background:#FFFDF9;padding:0 11px;font-size:16px}
@@ -299,7 +307,7 @@ body.tab-set header .hstat{display:none}
 <div id="app">
   <header>
     <div class="hrow">
-      <div class="brand"><span>🚂</span>任务小火车</div>
+      <div class="brand"><span>🚂</span>冉冉每日任务小火车</div>
       <div class="hdate" id="hdate"><b>—</b>—</div>
     </div>
     <div class="hstat">
@@ -318,7 +326,11 @@ body.tab-set header .hstat{display:none}
 
   <main>
     <section class="page on" id="pg-today">
-      <div class="sec-title">今天的车厢<span class="line"></span><span id="tips"></span></div>
+      <div class="sec-title">
+        <span class="st">今天的车厢</span><span class="line"></span>
+        <button class="tbtn" id="quickAdd">＋ 任务</button>
+        <button class="tbtn alt" id="goSet">✎ 编辑</button>
+      </div>
       <div id="taskList"></div>
     </section>
 
@@ -344,8 +356,8 @@ body.tab-set header .hstat{display:none}
 
     <section class="page" id="pg-set">
       <div class="panel">
-        <h3>任务清单</h3>
-        <p class="hint">拖不动就用 ↑↓ 调顺序。删掉的任务历史记录仍保留。</p>
+        <h3>任务清单（修改 · 删除）</h3>
+        <p class="hint">点图标/名称/分钟直接改；✕ 删除，↑↓ 调顺序。删掉的任务历史记录仍保留。</p>
         <div id="editor"></div>
         <div class="rowbtn"><button class="btn" id="addTask">＋ 添加任务</button></div>
       </div>
@@ -381,9 +393,15 @@ body.tab-set header .hstat{display:none}
         </div>
         <input type="file" id="impFile" accept="application/json,.json" style="display:none">
       </div>
-      <p class="hint" style="text-align:center;padding-bottom:14px">任务小火车 · 数据存在本机，随时可备份</p>
+      <p class="hint" style="text-align:center;padding-bottom:14px">冉冉每日任务小火车 · 数据存在本机，随时可备份</p>
     </section>
   </main>
+
+  <nav>
+    <button data-tab="today" class="on"><span class="i">🚂</span>今天</button>
+    <button data-tab="week"><span class="i">📊</span>周报</button>
+    <button data-tab="set"><span class="i">⚙️</span>任务设置</button>
+  </nav>
 </div>
 
 <canvas id="fx"></canvas>
@@ -692,7 +710,8 @@ function renderHeader(silent){
   var barPct = clamp(pct*100,0,100);
   $('#hBar').style.width = barPct + '%';
   if(silent !== true){
-    $('#tips').textContent = s.done === 0 ? '' : (s.done === s.total ? '全部完成 🎉' : '');
+    var tp = $('#tips');
+    if(tp) tp.textContent = s.done === 0 ? '' : (s.done === s.total ? '全部完成 🎉' : '');
   }
 }
 
@@ -1161,13 +1180,33 @@ function bind(){
   $('#wkPrev').addEventListener('click', function(){ weekOffset--; renderWeek(); });
   $('#wkNext').addEventListener('click', function(){ if(weekOffset < 0){ weekOffset++; renderWeek(); } });
 
-  $('#addTask').addEventListener('click', function(){
+  function addTask(){
     if(state.tasks.length >= 12){ toast('一节火车最多 12 节车厢'); return; }
     state.tasks.push({ id:uid(), emoji:'⭐', name:'新任务', targetMin:15, color:PALETTE[state.tasks.length%PALETTE.length] });
     save(); renderEditor(); renderTrain(); renderTasks(); renderHeader();
     var wrap = $('#editor');
     var last = wrap.lastElementChild;
     if(last) last.scrollIntoView({ block:'center', behavior:'smooth' });
+    setTimeout(function(){
+      var row = wrap.lastElementChild;
+      var nm = row && row.querySelector('.nm');
+      if(nm){ nm.focus(); nm.select(); }
+    }, 350);
+  }
+
+  $('#addTask').addEventListener('click', addTask);
+
+  $('#quickAdd').addEventListener('click', function(){
+    setTab('set');
+    setTimeout(addTask, 120);
+  });
+
+  $('#goSet').addEventListener('click', function(){
+    setTab('set');
+    setTimeout(function(){
+      var el = $('#editor');
+      if(el) el.scrollIntoView({ block:'center', behavior:'smooth' });
+    }, 160);
   });
 
   // gh settings
