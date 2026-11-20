@@ -123,41 +123,35 @@ header{
 }
 .car{
   position:relative;flex:0 0 auto;
-  width:58px;height:50px;margin-right:9px;
+  width:56px;height:44px;margin-right:9px;
   border-radius:12px 12px 9px 9px;
-  background:#FFFDF7;
-  border:1.5px dashed #DECBB2;
+  background:var(--soft,rgba(255,122,69,.13));
+  border:1.5px dashed var(--edge,rgba(180,140,100,.45));
   display:flex;align-items:center;justify-content:center;
-  font-size:23px;line-height:1;
-  color:#C9B49C;
   transition:transform .25s cubic-bezier(.2,1.4,.4,1),background .25s,border-color .25s;
 }
 .car::after{
   content:"";position:absolute;right:-10px;top:50%;width:11px;height:3px;border-radius:3px;background:#E2D0B8;transform:translateY(-50%);
 }
 .car:last-child::after{display:none}
-.car>span:first-child{filter:grayscale(.8);opacity:.45;transition:filter .25s,opacity .25s}
-.car.done>span:first-child{filter:none;opacity:1}
-.car .tick{
-  position:absolute;right:-5px;top:-6px;
-  width:18px;height:18px;border-radius:50%;
-  background:var(--ok);color:#fff;font-size:11px;font-weight:800;
-  display:none;align-items:center;justify-content:center;
-  box-shadow:0 2px 5px rgba(40,150,90,.35);
+.car .mark{
+  font-size:17px;font-weight:800;color:#fff;line-height:1;
+  opacity:0;transform:scale(.6);transition:opacity .2s,transform .2s;
 }
 .car.done{
   border-style:solid;border-color:transparent;
-  color:#fff;transform:translateY(-2px);
+  background:var(--c,#FF7A45);
+  transform:translateY(-2px);
   box-shadow:0 4px 12px rgba(180,120,60,.22);
 }
-.car.done .tick{display:flex}
+.car.done .mark{opacity:1;transform:scale(1)}
 .car.pop{animation:pop .5s cubic-bezier(.2,1.6,.4,1)}
 @keyframes pop{0%{transform:scale(.82) translateY(0)}55%{transform:scale(1.14) translateY(-9px)}100%{transform:scale(1) translateY(-2px)}}
 .car .cap{
   position:absolute;bottom:-17px;left:0;right:0;text-align:center;
   font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
-.car.done .cap{color:var(--ink2)}
+.car.done .cap{color:var(--ink2);font-weight:700}
 
 /* ---------- pages ---------- */
 main{flex:1;padding:16px 16px 0}
@@ -524,7 +518,7 @@ body.tab-set header .hstat{display:none}
         </div>
         <input type="file" id="impFile" accept="application/json,.json" style="display:none">
       </div>
-      <p class="hint" style="text-align:center;padding-bottom:14px">冉冉每日任务小火车 · 数据存在本机 · v6</p>
+      <p class="hint" style="text-align:center;padding-bottom:14px">冉冉每日任务小火车 · 数据存在本机 · v7</p>
     </section>
   </main>
 
@@ -891,10 +885,9 @@ function renderTrain(){
   var html = '<div class="rail"></div><div class="loco">🚂<span class="puff">💨</span></div>';
   state.tasks.forEach(function(t){
     var r = getRec(state, dk, t.id);
-    var style = r.done ? 'style="background:'+esc(t.color)+'"' : '';
+    var style = 'style="--c:'+esc(t.color)+';--soft:'+hexSoft(t.color,0.13)+';--edge:'+hexSoft(t.color,0.45)+'"';
     html += '<div class="car'+(r.done?' done':'')+'" data-id="'+t.id+'" '+style+'>'
-          + '<span>'+esc(t.emoji)+'</span>'
-          + '<span class="tick">✓</span>'
+          + '<span class="mark">✓</span>'
           + '<span class="cap">'+esc(t.name)+'</span>'
           + '</div>';
   });
