@@ -264,7 +264,8 @@ main{flex:1;padding:16px 16px 0}
 .field input:focus{outline:2px solid #FFD8C4;border-color:#FFC3A6}
 .rowbtn{display:flex;gap:9px;margin-top:12px}
 .rowbtn .btn{flex:1}
-.syncbar{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.syncbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.syncbar #syncText{flex:1;min-width:0;line-height:1.55}
 .syncbar .dot{width:7px;height:7px;border-radius:50%;background:#CFC0AE;flex:0 0 auto}
 .syncbar.ok .dot{background:var(--ok)}
 .syncbar.err .dot{background:#E2684F}
@@ -364,7 +365,7 @@ body.tab-set header .hstat{display:none}
 
       <div class="panel">
         <h3>云备份（GitHub 私有仓库）</h3>
-        <p class="hint">填一次就行。Token 只存在这台手机的浏览器里，不会上传到任何别的地方。</p>
+        <p class="hint">Token 只存这台手机，不会进代码。生成路径：GitHub → Settings → Developer settings → Personal access tokens → <b>Fine-grained tokens</b> → Generate new token；<b>Repository access</b> 选 Only select repositories → 勾 <b>train-priv</b>；<b>Permissions → Contents</b> 选 <b>Read and write</b>。填好点「检查连接」。</p>
         <div class="field"><label>仓库 owner</label><input id="ghOwner" placeholder="RANRAN20181215" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
         <div class="field"><label>私有仓库名</label><input id="ghRepo" placeholder="train-priv" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
         <div class="field"><label>文件路径</label><input id="ghPath" placeholder="data/tasks.json" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
@@ -377,6 +378,9 @@ body.tab-set header .hstat{display:none}
         <div class="rowbtn">
           <button class="btn ghost" id="ghPull">从云端恢复</button>
           <button class="btn ghost" id="ghClear">清除 Token</button>
+        </div>
+        <div class="rowbtn">
+          <button class="btn ghost" id="ghCheck">检查连接</button>
         </div>
         <div class="syncbar" id="syncbar"><span class="dot"></span><span id="syncText">未配置</span><span class="sp" id="syncTime"></span></div>
       </div>
@@ -1079,11 +1083,12 @@ async function ghPush(auto){
       var info = await res.json();
       sha = info.sha;
     }else if(res.status === 404){
+      var probe = await probeRepo();
+      if(!probe.ok) throw new Error(probe.msg);
       sha = null;
-    }else if(res.status === 401 || res.status === 403){
-      throw new Error('Token 无效或没有该仓库权限');
     }else{
-      throw new Error('读取失败 ' + res.status);
+      var j1 = await res.json().catch(function(){ return {}; });
+      throw new Error(ghErr(res.status, j1));
     }
 
     var body = {
@@ -1100,7 +1105,11 @@ async function ghPush(auto){
     });
     if(!put.ok){
       var err = await put.json().catch(function(){ return {}; });
-      throw new Error(err.message ? err.message.slice(0,40) : ('写入失败 ' + put.status));
+      if(put.status === 404){
+        var p2 = await probeRepo();
+        throw new Error(p2.ok ? '写入失败：Token 只读，需要 Contents 读写' : p2.msg);
+      }
+      throw new Error(ghErr(put.status, err));
     }
     var out = await put.json();
     try{ localStorage.setItem(SHA_KEY, out.content.sha); }catch(e){}
@@ -1109,7 +1118,7 @@ async function ghPush(auto){
     syncPending = false;
     return true;
   }catch(e){
-    setSyncUI('err', (e.message || '备份失败').slice(0, 32));
+    setSyncUI('err', e.message || '备份失败');
     syncPending = false;
     if(!auto) toast(e.message || '备份失败');
     return false;
@@ -1120,8 +1129,15 @@ async function ghPull(interactive){
   if(!ghReady()){ toast('先填好备份设置'); return; }
   try{
     var res = await fetch(contentsUrl() + '?ref=' + encodeURIComponent(state.gh.branch || 'main'), { headers: ghHeaders(), cache:'no-store' });
-    if(res.status === 404){ toast('云端还没有备份文件'); return; }
-    if(!res.ok) throw new Error('读取失败 ' + res.status);
+    if(res.status === 404){
+      var probe = await probeRepo();
+      if(!probe.ok) throw new Error(probe.msg);
+      toast('云端还没有备份文件'); return;
+    }
+    if(!res.ok){
+      var j = await res.json().catch(function(){ return {}; });
+      throw new Error(ghErr(res.status, j));
+    }
     var info = await res.json();
     var text = b64decodeUtf8(info.content || '');
     var data = JSON.parse(text);
@@ -1136,9 +1152,48 @@ async function ghPull(interactive){
     setSyncUI('ok','已从云端恢复', new Date().toTimeString().slice(0,5));
     toast('恢复完成');
   }catch(e){
-    setSyncUI('err', '恢复失败');
+    setSyncUI('err', e.message || '恢复失败');
     toast(e.message || '恢复失败');
   }
+}
+
+function ghErr(status, j){
+  var m = (j && j.message) || '';
+  if(status === 401) return 'Token 无效或已过期，请重新生成';
+  if(status === 403) return 'Token 没有 Contents 读写权限';
+  if(status === 404) return 'Token 看不到 ' + (state.gh.repo || '私有仓库') + '：Repository access 没勾这个仓库';
+  if(status === 409) return '云端版本冲突，再点一次备份';
+  if(status === 422) return 'Token 权限不够（需要 Contents: Read and write）';
+  if(status >= 500) return 'GitHub 服务异常，稍后再试';
+  return 'GitHub 返回 ' + status + (m ? '：' + String(m).slice(0,30) : '');
+}
+
+async function probeRepo(){
+  var g = state.gh;
+  try{
+    var r = await fetch('https://api.github.com/repos/' + encodeURIComponent(g.owner) + '/' + encodeURIComponent(g.repo),
+      { headers: ghHeaders(), cache:'no-store' });
+    if(r.ok) return { ok:true };
+    var j = await r.json().catch(function(){ return {}; });
+    return { ok:false, msg: ghErr(r.status, j) };
+  }catch(e){
+    return { ok:false, msg:'网络不通，检查手机能不能上 GitHub' };
+  }
+}
+
+async function ghCheck(){
+  if(!state.gh.token || !state.gh.owner || !state.gh.repo){ toast('先填好 owner / 仓库名 / Token'); return; }
+  setSyncUI('busy','检查中…');
+  var p = await probeRepo();
+  if(!p.ok){ setSyncUI('err', p.msg); toast(p.msg); return; }
+  var c = await fetch(contentsUrl() + '?ref=' + encodeURIComponent(state.gh.branch || 'main'),
+    { headers: ghHeaders(), cache:'no-store' });
+  if(c.status === 200){ setSyncUI('ok','连接正常 · 云端有备份',''); toast('连接正常，可以直接备份'); return; }
+  if(c.status === 404){ setSyncUI('ok','连接正常 · 云端还没有备份文件',''); toast('连接正常，现在可以备份了'); return; }
+  var j = await c.json().catch(function(){ return {}; });
+  var msg = ghErr(c.status, j);
+  setSyncUI('err', msg);
+  toast(msg);
 }
 
 /* ============ export / import ============ */
@@ -1225,10 +1280,16 @@ function bind(){
     state.gh.token = $('#ghToken').value.trim();
     try{ localStorage.removeItem(SHA_KEY); }catch(e){}
     save({noSync:true});
-    if(ghReady()){ toast('已保存，开始备份'); ghPush(false); }
+    if(ghReady()){
+      setSyncUI('busy','检查中…');
+      ghCheck().then(function(){
+        if(syncState === 'ok'){ toast('已保存，开始备份'); ghPush(false); }
+      });
+    }
     else { setSyncUI('idle','未配置'); toast('已保存'); }
   });
   $('#ghPush').addEventListener('click', function(){ ghPush(false); });
+  $('#ghCheck').addEventListener('click', ghCheck);
   $('#ghPull').addEventListener('click', function(){ ghPull(true); });
   $('#ghClear').addEventListener('click', function(){
     if(!confirm('清除这台手机上保存的 Token？')) return;
