@@ -397,7 +397,7 @@ body.tab-set header .hstat{display:none}
         </div>
         <input type="file" id="impFile" accept="application/json,.json" style="display:none">
       </div>
-      <p class="hint" style="text-align:center;padding-bottom:14px">冉冉每日任务小火车 · 数据存在本机 · v4</p>
+      <p class="hint" style="text-align:center;padding-bottom:14px">冉冉每日任务小火车 · 数据存在本机 · v5</p>
     </section>
   </main>
 
@@ -1187,6 +1187,7 @@ async function probeRepo(){
     if(r.status === 404){
       var me = await whoAmI();
       if(me === '__invalid__') return { ok:false, msg:'Token 无效或已过期，请重新生成' };
+      if(/^ghp_/.test(String(g.token))) return { ok:false, msg:'经典 Token 看不到这个仓库：确认仓库名，或在 Token 里勾上 repo 权限' };
       if(me && me.toLowerCase() !== String(g.owner).toLowerCase()){
         return { ok:false, msg:'这个 Token 属于账号 ' + me + '，不是 ' + g.owner + '，请用 ' + g.owner + ' 登录后重新生成' };
       }
