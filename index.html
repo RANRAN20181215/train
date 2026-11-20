@@ -1272,12 +1272,16 @@ function bind(){
   $('#ghToken').value = state.gh.token || '';
   if(ghReady()) setSyncUI('ok','已配置', '');
 
-  $('#ghSave').addEventListener('click', function(){
+  function applyGhForm(){
     state.gh.owner = $('#ghOwner').value.trim();
     state.gh.repo = $('#ghRepo').value.trim();
     state.gh.path = ($('#ghPath').value.trim() || 'data/tasks.json');
     state.gh.branch = ($('#ghBranch').value.trim() || 'main');
     state.gh.token = $('#ghToken').value.trim();
+  }
+
+  $('#ghSave').addEventListener('click', function(){
+    applyGhForm();
     try{ localStorage.removeItem(SHA_KEY); }catch(e){}
     save({noSync:true});
     if(ghReady()){
@@ -1288,8 +1292,8 @@ function bind(){
     }
     else { setSyncUI('idle','未配置'); toast('已保存'); }
   });
-  $('#ghPush').addEventListener('click', function(){ ghPush(false); });
-  $('#ghCheck').addEventListener('click', ghCheck);
+  $('#ghPush').addEventListener('click', function(){ applyGhForm(); save({noSync:true}); ghPush(false); });
+  $('#ghCheck').addEventListener('click', function(){ applyGhForm(); save({noSync:true}); ghCheck(); });
   $('#ghPull').addEventListener('click', function(){ ghPull(true); });
   $('#ghClear').addEventListener('click', function(){
     if(!confirm('清除这台手机上保存的 Token？')) return;
