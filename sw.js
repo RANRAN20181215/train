@@ -1,4 +1,4 @@
-var CACHE = 'train-v1';
+var CACHE = 'train-v3';
 
 self.addEventListener('install', function(){
   self.skipWaiting();
@@ -20,16 +20,18 @@ self.addEventListener('fetch', function(e){
   if(u.origin !== location.origin) return;
 
   e.respondWith(
-    fetch(req).then(function(res){
-      if(res && res.status === 200 && res.type === 'basic'){
-        var copy = res.clone();
-        caches.open(CACHE).then(function(c){ c.put(req, copy); });
-      }
-      return res;
-    }).catch(function(){
-      return caches.match(req).then(function(hit){
-        return hit || caches.match('./index.html') || caches.match('./');
-      });
-    })
+    fetch(new Request(req, { cache: 'no-store' }))
+      .then(function(res){
+        if(res && res.status === 200 && (res.type === 'basic' || res.type === 'default')){
+          var copy = res.clone();
+          caches.open(CACHE).then(function(c){ c.put(req, copy); });
+        }
+        return res;
+      })
+      .catch(function(){
+        return caches.match(req).then(function(hit){
+          return hit || caches.match('./index.html') || caches.match('./');
+        });
+      })
   );
 });
