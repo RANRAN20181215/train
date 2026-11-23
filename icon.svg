@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFE082"/>
+      <stop offset="0.55" stop-color="#FFC02E"/>
+      <stop offset="1" stop-color="#FF9F1C"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFE9A0"/>
+      <stop offset="0.45" stop-color="#FFC93C"/>
+      <stop offset="1" stop-color="#E0A100"/>
+    </linearGradient>
+    <linearGradient id="fur" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#D69B4C"/>
+      <stop offset="1" stop-color="#B4742F"/>
+    </linearGradient>
+    <linearGradient id="face" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFF1DE"/>
+      <stop offset="1" stop-color="#FFDDB6"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <circle cx="256" cy="290" r="235" fill="#FFD863" opacity="0.35"/>
+
+  <!-- phoenix feathers -->
+  <path d="M168 168 C 138 108 120 74 96 42" fill="none" stroke="#E53935" stroke-width="15" stroke-linecap="round"/>
+  <path d="M344 168 C 374 108 392 74 416 42" fill="none" stroke="#E53935" stroke-width="15" stroke-linecap="round"/>
+  <circle cx="94" cy="38" r="15" fill="#FFC93C" stroke="#E0A100" stroke-width="4"/>
+  <circle cx="418" cy="38" r="15" fill="#FFC93C" stroke="#E0A100" stroke-width="4"/>
+
+  <!-- ears -->
+  <circle cx="82" cy="270" r="62" fill="url(#fur)"/>
+  <circle cx="82" cy="270" r="34" fill="#FFE7CC"/>
+  <circle cx="430" cy="270" r="62" fill="url(#fur)"/>
+  <circle cx="430" cy="270" r="34" fill="#FFE7CC"/>
+
+  <!-- head -->
+  <circle cx="256" cy="258" r="176" fill="url(#fur)"/>
+
+  <!-- face -->
+  <path d="M256 142
+           C 326 142 366 192 366 250
+           C 366 306 336 348 296 372
+           C 284 380 270 386 256 390
+           C 242 386 228 380 216 372
+           C 176 348 146 306 146 250
+           C 146 192 186 142 256 142 Z" fill="url(#face)"/>
+
+  <!-- headband -->
+  <path d="M96 246 C 122 152 182 116 256 116 C 330 116 390 152 416 246"
+        fill="none" stroke="url(#gold)" stroke-width="30" stroke-linecap="round"/>
+  <path d="M108 228 C 132 154 184 126 256 126 C 328 126 380 154 404 228"
+        fill="none" stroke="#FFF3C4" stroke-width="7" stroke-linecap="round" opacity="0.75"/>
+  <circle cx="256" cy="122" r="24" fill="url(#gold)" stroke="#D99500" stroke-width="5"/>
+  <path d="M256 108 L268 122 L256 136 L244 122 Z" fill="#FFF3C4" opacity="0.9"/>
+
+  <!-- brows -->
+  <path d="M176 214 Q 206 196 234 212" fill="none" stroke="#6B4324" stroke-width="13" stroke-linecap="round"/>
+  <path d="M278 212 Q 306 196 336 214" fill="none" stroke="#6B4324" stroke-width="13" stroke-linecap="round"/>
+
+  <!-- eyes -->
+  <ellipse cx="206" cy="262" rx="30" ry="34" fill="#FFFFFF"/>
+  <ellipse cx="306" cy="262" rx="30" ry="34" fill="#FFFFFF"/>
+  <circle cx="210" cy="266" r="18" fill="#2A1A12"/>
+  <circle cx="310" cy="266" r="18" fill="#2A1A12"/>
+  <circle cx="204" cy="258" r="6.5" fill="#FFFFFF"/>
+  <circle cx="304" cy="258" r="6.5" fill="#FFFFFF"/>
+
+  <!-- blush -->
+  <ellipse cx="158" cy="312" rx="28" ry="20" fill="#FF9E80" opacity="0.55"/>
+  <ellipse cx="354" cy="312" rx="28" ry="20" fill="#FF9E80" opacity="0.55"/>
+
+  <!-- nose -->
+  <ellipse cx="256" cy="306" rx="17" ry="13" fill="#E2A075"/>
+  <ellipse cx="250" cy="303" rx="6" ry="4" fill="#C9835C" opacity="0.7"/>
+
+  <!-- smile -->
+  <path d="M220 342 Q 256 372 292 342" fill="none" stroke="#7A4A2A" stroke-width="11" stroke-linecap="round"/>
+</svg>
